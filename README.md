@@ -1,4 +1,4 @@
-# burn-jepa — Self-Supervised Losses for Burn
+# burn-jepa - Self-Supervised Losses for Burn
 
 [![CI](https://github.com/sehaxe/burn-jepa/actions/workflows/ci.yml/badge.svg)](https://github.com/sehaxe/burn-jepa/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/burn-jepa)](https://crates.io/crates/burn-jepa)
