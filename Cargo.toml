@@ -1,0 +1,22 @@
+[package]
+name = "burn-jepa"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0"
+description = "JEPA self-supervised losses for Burn — LeJEPA isotropic Gaussian + KoLeo uniformity (Meta AI)"
+keywords = ["burn", "jepa", "lejepa", "koleo", "self-supervised", "regularization"]
+repository = "https://github.com/sehaxe/burn-jepa"
+homepage = "https://github.com/sehaxe/burn-jepa"
+readme = "README.md"
+
+[features]
+default = ["std"]
+std = ["burn/std", "burn-tensor/std"]
+
+[dependencies]
+burn = { version = "0.21", default-features = false }
+burn-tensor = "0.21"
+
+[dev-dependencies]
+burn-ndarray = { version = "0.21", features = ["blas-openblas"] }
+burn = { version = "0.21", features = ["ndarray"] }
