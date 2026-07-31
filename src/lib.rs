@@ -1,10 +1,10 @@
-//! # burn-jepa — Self-Supervised Losses for Burn
+//! # burn-jepa - Self-Supervised Losses for Burn
 //!
 //! | arXiv | Loss | What |
 //! |-------|------|------|
-//! | [2511.08544](https://arxiv.org/abs/2511.08544) | `lejepa_loss` | Isotropic Gaussian — ∥mean∥² + ∥cov-I∥²/D |
-//! | [2304.07193](https://arxiv.org/abs/2304.07193) | `koleo_loss` | KoLeo uniformity — -mean(log(min_dist)) |
-//! | [2104.14294](https://arxiv.org/abs/2104.14294) | `EmaTeacher` | Momentum EMA — student tracks teacher |
+//! | [2511.08544](https://arxiv.org/abs/2511.08544) | `lejepa_loss` | Isotropic Gaussian - ∥mean∥² + ∥cov-I∥²/D |
+//! | [2304.07193](https://arxiv.org/abs/2304.07193) | `koleo_loss` | KoLeo uniformity - -mean(log(min_dist)) |
+//! | [2104.14294](https://arxiv.org/abs/2104.14294) | `EmaTeacher` | Momentum EMA - student tracks teacher |
 use burn::module::{Module, Param};
 use burn::tensor::{backend::Backend, Tensor};
 
@@ -55,11 +55,13 @@ pub fn koleo_loss<B: Backend>(z: Tensor<B, 2>) -> Tensor<B, 1> {
     let z_norm = z_sub / z_sq.sqrt();
     let dots = z_norm.clone().matmul(z_norm.transpose());
     let dists = dots.neg().mul_scalar(2.0).add_scalar(2.0) + Tensor::eye(m, &dev).mul_scalar(1e6);
-    let nn_dists = dists.min_dim(1).clamp_min(1e-8);
+    // Euclidean distance (DINOv2 reference: pdist(p=2)): 2-2*dot is the
+    // SQUARED distance on the unit sphere; sqrt it so -log(d) matches.
+    let nn_dists = dists.min_dim(1).sqrt().clamp_min(1e-8);
     nn_dists.log().neg().mean().unsqueeze()
 }
 
-/// Momentum EMA teacher — student tracks teacher via exponential moving average.
+/// Momentum EMA teacher - student tracks teacher via exponential moving average.
 ///
 /// From DINO (2104.14294): `teacher = momentum * teacher + (1-momentum) * student`.
 /// Default momentum: 0.996.
